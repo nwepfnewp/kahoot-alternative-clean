@@ -1,0 +1,26 @@
+// pages/create/[quizSetId].tsx
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+
+export default function Create() {
+  const { quizSetId } = useRouter().query
+  const [gameId, setGameId] = useState<string>('')
+
+  useEffect(() => {
+    if (quizSetId) {
+      supabase.from('games')
+        .insert({ quiz_set_id: quizSetId })
+        .select('id')
+        .then(({ data }) => setGameId(data![0].id))
+    }
+  }, [quizSetId])
+
+  return (
+    <div>
+      <h1>Хост: Игра создана</h1>
+      <p>Game ID: {gameId}</p>
+      <p>Ссылка для игроков: http://{location.host}/join/{gameId}</p>
+    </div>
+  )
+}

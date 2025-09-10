@@ -1,0 +1,27 @@
+// pages/join/[gameId].tsx
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { supabase } from '@/lib/supabase'
+
+export default function Join() {
+  const { gameId } = useRouter().query
+  const [name, setName] = useState('')
+
+  const handleJoin = async () => {
+    await supabase.from('participants')
+      .insert({ game_id: gameId, nickname: name })
+    window.location.href = `/game/${gameId}`
+  }
+
+  return (
+    <div>
+      <h1>Присоединение к игре</h1>
+      <input
+        placeholder="Ваше имя"
+        value={name}
+        onChange={e => setName(e.target.value)}
+      />
+      <button onClick={handleJoin}>Join</button>
+    </div>
+  )
+}

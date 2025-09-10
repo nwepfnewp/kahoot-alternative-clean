@@ -1,0 +1,43 @@
+// pages/index.tsx
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
+import { useRouter } from 'next/router'
+
+export default function Home() {
+  const [quizSets, setQuizSets] = useState([])
+  const [pin, setPin] = useState('')
+  const router = useRouter()
+
+  useEffect(() => {
+    supabase.from('quiz_sets')
+      .select('id,name')
+      .then(({ data }) => setQuizSets(data))
+  }, [])
+
+  const handleCreate = (id:string) => {
+    router.push(`/create/${id}`)
+  }
+
+  const handleJoin = () => {
+    router.push(`/join/${pin}`)
+  }
+
+  return (
+    <div>
+      <h1>Доступные квизы</h1>
+      {quizSets.map(q => (
+        <div key={q.id}>
+          {q.name}
+          <button onClick={() => handleCreate(q.id)}>Create Game</button>
+        </div>
+      ))}
+      <hr/>
+      <input
+        placeholder="Введите PIN"
+        value={pin}
+        onChange={e => setPin(e.target.value)}
+      />
+      <button onClick={handleJoin}>Join Game</button>
+    </div>
+  )
+}

@@ -1,0 +1,6 @@
+const { data } = await supabase
+  .from('game_results')
+  .select('participant_id, sum(score)')
+  .eq('game_id', gameId)
+  .group('participant_id')
+  .order('sum', { ascending: false })
